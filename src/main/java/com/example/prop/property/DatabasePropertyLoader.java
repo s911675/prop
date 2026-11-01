@@ -45,6 +45,7 @@ public class DatabasePropertyLoader {
     private final ConfigurableEnvironment env;
 
     private SqlSessionFactory cachedFactory;
+    private boolean jndiSource = false;
     private final AtomicBoolean tableEnsured = new AtomicBoolean(false);
 
     public DatabasePropertyLoader(org.springframework.core.env.Environment env) {
@@ -149,8 +150,11 @@ public class DatabasePropertyLoader {
 
     private DataSource resolveDataSource() {
         DataSource ds = jndiDataSource();
-        if (ds == null) ds = dbcpDataSource();
-        return ds;
+        if (ds != null) {
+            jndiSource = true;
+            return ds;
+        }
+        return dbcpDataSource();
     }
 
     private DataSource jndiDataSource() {
@@ -188,7 +192,7 @@ public class DatabasePropertyLoader {
     }
 
     private void closeIfDbcp(DataSource dataSource) {
-        if (dataSource instanceof Closeable) {
+        if (!jndiSource && dataSource instanceof Closeable) {
             try { ((Closeable) dataSource).close(); } catch (IOException e) { /* ignore */ }
         }
     }
