@@ -1,0 +1,22 @@
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# H2 파일 DB (로컬 런타임 데이터)
+propdb.mv.db
+propdb.trace.db
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Maven wrapper (없으면 무시)
+!.mvn/wrapper/maven-wrapper.jar
