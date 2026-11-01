@@ -68,16 +68,15 @@ class PropertyControllerTest {
     @Test
     @Transactional
     void delete_afterSave_returns200WithOkStatus() throws Exception {
-        String body = json("ctrl-test", "default", "ctrl.del.key", "del-val");
-
         mockMvc.perform(post("/api/properties")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
+                .content(json("ctrl-test", "default", "ctrl.del.key", "del-val")))
             .andExpect(status().isOk());
 
         mockMvc.perform(delete("/api/properties")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
+                .param("site", "ctrl-test")
+                .param("profile", "default")
+                .param("propertyKey", "ctrl.del.key"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status").value("ok"));
     }

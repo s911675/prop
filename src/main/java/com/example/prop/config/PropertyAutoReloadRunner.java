@@ -25,6 +25,7 @@ public class PropertyAutoReloadRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         log.info("ApplicationRunner: reloading DB property source after full context initialization");
-        configurer.reload();
+        int keysLoaded = configurer.reload();
+        log.info("ApplicationRunner: reload complete — {} keys loaded", keysLoaded);
     }
 }

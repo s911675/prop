@@ -24,6 +24,7 @@ public class PropertySqlProvider {
         SQL sql = new SQL();
         sql.SELECT_DISTINCT("se");
         sql.FROM(TABLE);
+        sql.WHERE("se IS NOT NULL");
         return sql.toString();
     }
 

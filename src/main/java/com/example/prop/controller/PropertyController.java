@@ -9,10 +9,13 @@ import com.example.prop.property.ProfileUtils;
 import com.example.prop.service.PropertyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.EnumerablePropertySource;
+import org.springframework.core.env.PropertySource;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @RestController
@@ -48,7 +51,14 @@ public class PropertyController {
 
     /** 삭제 + 자동 reload */
     @DeleteMapping
-    public ApiResponse delete(@Valid @RequestBody DbProperty property) {
+    public ApiResponse delete(
+            @RequestParam @NotBlank String site,
+            @RequestParam @NotBlank String profile,
+            @RequestParam @NotBlank String propertyKey) {
+        DbProperty property = new DbProperty();
+        property.setSite(site);
+        property.setProfile(profile);
+        property.setPropertyKey(propertyKey);
         propertyService.delete(property);
         return new ApiResponse("ok", "삭제 및 reload 완료");
     }
@@ -77,11 +87,13 @@ public class PropertyController {
     @GetMapping("/context")
     public ContextResponse context() {
         List<String> profiles = ProfileUtils.resolveProfiles(env);
-        List<DbProperty> all = propertyService.findAll();
+        PropertySource<?> source = env.getPropertySources().get("DatabasePropertySource");
+        int keysLoaded = (source instanceof EnumerablePropertySource)
+                ? ((EnumerablePropertySource<?>) source).getPropertyNames().length : 0;
         return new ContextResponse(
                 env.getProperty("grip.site", "default"),
                 profiles,
-                all.size(),
+                keysLoaded,
                 "DatabasePropertySource");
     }
 }
