@@ -27,11 +27,13 @@ public class PropertyServiceImpl implements PropertyService {
     @Autowired
     private ConfigurableEnvironment env;
 
+    @Transactional(readOnly = true)
     @Override
     public List<DbProperty> findAll() {
         return propertyMapper.findAll(new DbProperty());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<DbProperty> findAll(DbProperty filter) {
         return propertyMapper.findAll(filter);
@@ -68,6 +70,7 @@ public class PropertyServiceImpl implements PropertyService {
         return ProfileUtils.resolveProfiles(env);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<String> getCategories() {
         return propertyMapper.findDistinctSe();
