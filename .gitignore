@@ -20,5 +20,14 @@ out/
 .DS_Store
 Thumbs.db
 
+# Excel 임시 파일
+~$*.xlsx
+~$*.xls
+~$*.xlsm
+~$*.docx
+~$*.doc
+~$*.pptx
+~$*.ppt
+
 # Maven wrapper (없으면 무시)
 !.mvn/wrapper/maven-wrapper.jar
