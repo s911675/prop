@@ -12,6 +12,7 @@ propdb.lock.db
 # IDE
 .idea/
 *.iml
+out/
 .vscode/
 *.swp
 
