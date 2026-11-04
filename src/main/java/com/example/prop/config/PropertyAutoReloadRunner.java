@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
  * 이 시점에 reload하면 data.sql로 삽입된 데이터가 정상 로딩된다.
  */
 @Slf4j
+@Order(1)
 @Component
 public class PropertyAutoReloadRunner implements ApplicationRunner {
 
