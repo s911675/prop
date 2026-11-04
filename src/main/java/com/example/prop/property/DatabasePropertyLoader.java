@@ -2,6 +2,7 @@ package com.example.prop.property;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.ibatis.builder.xml.XMLMapperBuilder;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -18,6 +19,7 @@ import org.springframework.util.StringUtils;
 import javax.sql.DataSource;
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -120,12 +122,16 @@ public class DatabasePropertyLoader {
         return cachedFactory;
     }
 
-    private SqlSessionFactory createFactory(DataSource dataSource) {
+    private SqlSessionFactory createFactory(DataSource dataSource) throws Exception {
         TransactionFactory txFactory = new JdbcTransactionFactory();
         Environment ibatisEnv = new Environment("prop-loader", txFactory, dataSource);
         Configuration config = new Configuration(ibatisEnv);
         config.setMapUnderscoreToCamelCase(true);
-        config.addMapper(PropertyMapper.class);
+        try (InputStream is = getClass().getResourceAsStream("/mapper/PropertyMapper.xml")) {
+            XMLMapperBuilder parser = new XMLMapperBuilder(
+                    is, config, "mapper/PropertyMapper.xml", config.getSqlFragments());
+            parser.parse();
+        }
         return new SqlSessionFactoryBuilder().build(config);
     }
 
