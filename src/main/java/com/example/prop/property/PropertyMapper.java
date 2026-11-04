@@ -9,6 +9,10 @@ public interface PropertyMapper {
     @SelectProvider(type = PropertySqlProvider.class, method = "findAll")
     List<DbProperty> findAll(DbProperty condition);
 
+    default List<DbProperty> findAll() {
+        return findAll(null);
+    }
+
     @SelectProvider(type = PropertySqlProvider.class, method = "findDistinctSe")
     List<String> findDistinctSe();
 

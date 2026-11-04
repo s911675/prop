@@ -30,7 +30,7 @@ public class PropertyServiceImpl implements PropertyService {
     @Transactional(readOnly = true)
     @Override
     public List<DbProperty> findAll() {
-        return propertyMapper.findAll(new DbProperty());
+        return propertyMapper.findAll();
     }
 
     @Transactional(readOnly = true)
