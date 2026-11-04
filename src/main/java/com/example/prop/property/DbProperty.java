@@ -2,8 +2,8 @@ package com.example.prop.property;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 /**
  * DB 테이블 zt_property_source 행 매핑 VO.
