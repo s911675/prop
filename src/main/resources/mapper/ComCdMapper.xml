@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.prop.code.ComCdMapper">
+
+    <sql id="columns">
+        grp_cd, cd, cd_nm, dc, sort_ord, use_at, etc_1,
+        reg_dt, rgtr, mdfcn_dt, mdfr
+    </sql>
+
+    <select id="findAll" parameterType="com.example.prop.code.ComCd"
+            resultType="com.example.prop.code.ComCd">
+        SELECT <include refid="columns"/>
+        FROM   tb_com_cd
+        <where>
+            <if test="grpCd != null">AND grp_cd = #{grpCd}</if>
+            <if test="cd    != null">AND cd     = #{cd}</if>
+            <if test="cdNm  != null">AND cd_nm  LIKE CONCAT('%', #{cdNm}, '%')</if>
+            <if test="useAt != null">AND use_at = #{useAt}</if>
+        </where>
+        ORDER BY grp_cd, sort_ord, cd
+    </select>
+
+    <select id="findByGrpCd" resultType="com.example.prop.code.ComCd">
+        SELECT <include refid="columns"/>
+        FROM   tb_com_cd
+        WHERE  grp_cd = #{grpCd}
+          AND  use_at = 'Y'
+        ORDER BY sort_ord, cd
+    </select>
+
+    <select id="findById" resultType="com.example.prop.code.ComCd">
+        SELECT <include refid="columns"/>
+        FROM   tb_com_cd
+        WHERE  grp_cd = #{grpCd}
+          AND  cd     = #{cd}
+    </select>
+
+    <insert id="insert" parameterType="com.example.prop.code.ComCd">
+        INSERT INTO tb_com_cd
+            (grp_cd, cd, cd_nm, dc, sort_ord, use_at, etc_1, rgtr)
+        VALUES
+            (#{grpCd}, #{cd}, #{cdNm}, #{dc}, #{sortOrd}, #{useAt}, #{etc1}, #{rgtr})
+    </insert>
+
+    <update id="update" parameterType="com.example.prop.code.ComCd">
+        UPDATE tb_com_cd
+        SET cd_nm    = #{cdNm},
+            dc       = #{dc},
+            sort_ord = #{sortOrd},
+            use_at   = #{useAt},
+            etc_1    = #{etc1},
+            mdfcn_dt = CURRENT_TIMESTAMP,
+            mdfr     = #{mdfr}
+        WHERE grp_cd = #{grpCd}
+          AND cd     = #{cd}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM tb_com_cd
+        WHERE grp_cd = #{grpCd}
+          AND cd     = #{cd}
+    </delete>
+
+</mapper>

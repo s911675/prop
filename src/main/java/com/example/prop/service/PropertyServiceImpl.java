@@ -4,6 +4,7 @@ import com.example.prop.property.DatabasePropertySourceConfigurer;
 import com.example.prop.property.DbProperty;
 import com.example.prop.property.ProfileUtils;
 import com.example.prop.property.PropertyMapper;
+import com.example.prop.property.PropertyReloadPublisher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -26,6 +27,9 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Autowired
     private ConfigurableEnvironment env;
+
+    @Autowired(required = false)
+    private PropertyReloadPublisher publisher;
 
     @Transactional(readOnly = true)
     @Override
@@ -81,9 +85,12 @@ public class PropertyServiceImpl implements PropertyService {
             @Override
             public void afterCommit() {
                 try {
-                    configurer.reload();
+                    configurer.reload();              // local PropertySource replacement
+                    if (publisher != null) {
+                        publisher.publish();          // notify other instances via pub/sub
+                    }
                 } catch (Exception e) {
-                    // afterCommit 내 예외는 TransactionSystemException으로 감싸져 500을 유발하므로 흡수
+                    // exceptions in afterCommit wrap into TransactionSystemException → absorb
                     log.error("Property reload failed after commit — next reload will sync", e);
                 }
             }

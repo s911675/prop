@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("com.example.prop.property")
+@MapperScan({"com.example.prop.property", "com.example.prop.code"})
 public class PropApplication {
     public static void main(String[] args) {
         SpringApplication.run(PropApplication.class, args);

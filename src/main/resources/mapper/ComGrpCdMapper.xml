@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.prop.code.ComGrpCdMapper">
+
+    <sql id="columns">
+        grp_cd, grp_cd_nm, dc, sort_ord, use_at, etc_1,
+        reg_dt, rgtr, mdfcn_dt, mdfr
+    </sql>
+
+    <select id="findAll" parameterType="com.example.prop.code.ComGrpCd"
+            resultType="com.example.prop.code.ComGrpCd">
+        SELECT <include refid="columns"/>
+        FROM   tb_com_grp_cd
+        <where>
+            <if test="grpCd    != null">AND grp_cd  = #{grpCd}</if>
+            <if test="grpCdNm  != null">AND grp_cd_nm LIKE CONCAT('%', #{grpCdNm}, '%')</if>
+            <if test="useAt    != null">AND use_at  = #{useAt}</if>
+        </where>
+        ORDER BY sort_ord, grp_cd
+    </select>
+
+    <select id="findById" resultType="com.example.prop.code.ComGrpCd">
+        SELECT <include refid="columns"/>
+        FROM   tb_com_grp_cd
+        WHERE  grp_cd = #{grpCd}
+    </select>
+
+    <insert id="insert" parameterType="com.example.prop.code.ComGrpCd">
+        INSERT INTO tb_com_grp_cd
+            (grp_cd, grp_cd_nm, dc, sort_ord, use_at, etc_1, rgtr)
+        VALUES
+            (#{grpCd}, #{grpCdNm}, #{dc}, #{sortOrd}, #{useAt}, #{etc1}, #{rgtr})
+    </insert>
+
+    <update id="update" parameterType="com.example.prop.code.ComGrpCd">
+        UPDATE tb_com_grp_cd
+        SET grp_cd_nm = #{grpCdNm},
+            dc        = #{dc},
+            sort_ord  = #{sortOrd},
+            use_at    = #{useAt},
+            etc_1     = #{etc1},
+            mdfcn_dt  = CURRENT_TIMESTAMP,
+            mdfr      = #{mdfr}
+        WHERE grp_cd = #{grpCd}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM tb_com_grp_cd
+        WHERE grp_cd = #{grpCd}
+    </delete>
+
+</mapper>
