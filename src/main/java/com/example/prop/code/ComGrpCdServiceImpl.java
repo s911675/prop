@@ -14,7 +14,7 @@ public class ComGrpCdServiceImpl implements ComGrpCdService {
     @Autowired
     private ComGrpCdMapper comGrpCdMapper;
 
-    @Cacheable("grp-codes")
+    @Cacheable(value = "grp", key = "'all'")
     @Transactional(readOnly = true)
     @Override
     public List<ComGrpCd> findAll() {
@@ -27,7 +27,7 @@ public class ComGrpCdServiceImpl implements ComGrpCdService {
         return comGrpCdMapper.findAll(condition);
     }
 
-    @Cacheable(value = "grp-codes", key = "#grpCd")
+    @Cacheable(value = "grp", key = "#grpCd")
     @Transactional(readOnly = true)
     @Override
     public ComGrpCd findById(String grpCd) {
@@ -38,7 +38,7 @@ public class ComGrpCdServiceImpl implements ComGrpCdService {
      * Insert or update: try update first; if no row affected, insert.
      * Evicts entire grp-codes cache because group list may change.
      */
-    @CacheEvict(value = "grp-codes", allEntries = true)
+    @CacheEvict(value = "grp", allEntries = true)
     @Transactional
     @Override
     public void save(ComGrpCd comGrpCd) {
@@ -48,7 +48,7 @@ public class ComGrpCdServiceImpl implements ComGrpCdService {
         }
     }
 
-    @CacheEvict(value = "grp-codes", allEntries = true)
+    @CacheEvict(value = "grp", allEntries = true)
     @Transactional
     @Override
     public void delete(String grpCd) {

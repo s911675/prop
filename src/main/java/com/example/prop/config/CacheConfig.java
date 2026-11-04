@@ -24,29 +24,31 @@ public class CacheConfig {
     @Value("${cache.code.enabled:false}")
     private boolean codeEnabled;
 
-    @Value("${cache.code.ttl-minutes:10}")
-    private long codeTtl;
+    @Value("${cache.code.detail.ttl-minutes:10}")
+    private long detailTtl;
 
-    @Value("${cache.grp-code.ttl-minutes:30}")
-    private long grpCodeTtl;
+    @Value("${cache.code.grp.ttl-minutes:30}")
+    private long grpTtl;
 
     @Bean
     public CacheManager cacheManager(
             @org.springframework.beans.factory.annotation.Autowired(required = false)
             RedisConnectionFactory factory) {
         if (!codeEnabled || factory == null) {
-            return new ConcurrentMapCacheManager("codes", "grp-codes");
+            return new ConcurrentMapCacheManager("detail", "grp");
         }
 
+        // Keys: code:{cacheName}:{key}  e.g. code:grp:all, code:detail:USER_STATUS
         RedisCacheConfiguration defConfig = RedisCacheConfiguration.defaultCacheConfig()
+                .computePrefixWith(cacheName -> "code:" + cacheName + ":")
                 .serializeKeysWith(RedisSerializationContext.SerializationPair
                         .fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair
                         .fromSerializer(new GenericJackson2JsonRedisSerializer()));
 
         Map<String, RedisCacheConfiguration> cacheConfigs = new HashMap<>();
-        cacheConfigs.put("codes",     defConfig.entryTtl(Duration.ofMinutes(codeTtl)));
-        cacheConfigs.put("grp-codes", defConfig.entryTtl(Duration.ofMinutes(grpCodeTtl)));
+        cacheConfigs.put("detail", defConfig.entryTtl(Duration.ofMinutes(detailTtl)));
+        cacheConfigs.put("grp",    defConfig.entryTtl(Duration.ofMinutes(grpTtl)));
 
         return RedisCacheManager.builder(factory)
                 .cacheDefaults(defConfig)

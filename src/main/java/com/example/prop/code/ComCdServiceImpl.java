@@ -20,14 +20,14 @@ public class ComCdServiceImpl implements ComCdService {
         return comCdMapper.findAll(condition);
     }
 
-    @Cacheable(value = "codes", key = "#grpCd")
+    @Cacheable(value = "detail", key = "#grpCd")
     @Transactional(readOnly = true)
     @Override
     public List<ComCd> findByGrpCd(String grpCd) {
         return comCdMapper.findByGrpCd(grpCd);
     }
 
-    @Cacheable(value = "codes", key = "#grpCd + ':' + #cd")
+    @Cacheable(value = "detail", key = "#grpCd + ':' + #cd")
     @Transactional(readOnly = true)
     @Override
     public ComCd findById(String grpCd, String cd) {
@@ -38,7 +38,7 @@ public class ComCdServiceImpl implements ComCdService {
      * Insert or update: try update first; if no row affected, insert.
      * Evicts the group's list cache (grpCd key) so the next read refreshes from DB.
      */
-    @CacheEvict(value = "codes", key = "#comCd.grpCd")
+    @CacheEvict(value = "detail", key = "#comCd.grpCd")
     @Transactional
     @Override
     public void save(ComCd comCd) {
@@ -48,7 +48,7 @@ public class ComCdServiceImpl implements ComCdService {
         }
     }
 
-    @CacheEvict(value = "codes", key = "#grpCd")
+    @CacheEvict(value = "detail", key = "#grpCd")
     @Transactional
     @Override
     public void delete(String grpCd, String cd) {
